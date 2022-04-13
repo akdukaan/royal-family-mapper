@@ -11,31 +11,15 @@ public class Person {
     HashSet<Person> children = new HashSet<>();
     String name;
     String link;
-    boolean isReal = false;
-
-    public boolean isLinkMalformed(String link) {
-        if (link.contains(";redlink=1")) return true;
-        if (link.contains("en.wikipedia.orghttps")) return true;
-        if (link.contains("Elchingen_Abbey")) return true;
-        return false;
-    }
-
-    public String fixedName(String link) {
-        if (isLinkMalformed(link)) return null;
-        String[] arr = link.split("wiki/");
-        String name = arr[arr.length - 1].replace("_", " ").trim();
-        if (name.length() <= 1) return null;
-        if (name.startsWith("https://")) return null;
-        if (name.startsWith("(")) return null;
-        return name;
-    }
+    int x = 0;
+    int y = 0;
 
     public Person(String link) {
         if (Main.people.size() >= Main.maxSize) return;
+        // TODO Fix some links with % in them
         this.link = link;
         name = fixedName(link);
         if (name == null) return;
-        isReal = true;
         if (Main.people.containsKey(link)) return;
         Main.people.put(link, this);
         String notifyMessage = name + " " + link;
@@ -51,6 +35,23 @@ public class Person {
             System.out.println("Ignoring exception");
             e.printStackTrace();
         }
+    }
+
+    public static boolean isLinkMalformed(String link) {
+        if (link.contains(";redlink=1")) return true;
+        if (link.contains("en.wikipedia.orghttps")) return true;
+        if (link.contains("Elchingen_Abbey")) return true;
+        return false;
+    }
+
+    public static String fixedName(String link) {
+        if (isLinkMalformed(link)) return null;
+        String[] arr = link.split("wiki/");
+        String name = arr[arr.length - 1].replace("_", " ").trim();
+        if (name.length() <= 1) return null;
+        if (name.startsWith("https://")) return null;
+        if (name.startsWith("(")) return null;
+        return name;
     }
 
     public void createFamily(Element table) {
@@ -140,7 +141,7 @@ public class Person {
     public boolean equals(Object o) {
         if (o instanceof Person) {
             Person p = (Person) o;
-            if (p.toString().equals(o.toString())) {
+            if (p.name.equals(this.name)) {
                 return true;
             }
         }
