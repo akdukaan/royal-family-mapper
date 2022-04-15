@@ -20,7 +20,9 @@ public class Main {
         System.out.println("====================================================================================");
         System.out.println();
 
+
         // Set the x values of the people by topologicalSorting
+        long startTime = System.nanoTime();
         visited = new HashSet<>();
         stack = new Stack<>();
         for (Person p : people.values()) {
@@ -35,35 +37,63 @@ public class Main {
         // TODO Set the Y values of the people using FELINE
 
 
-        // TODO Create a large (100+) set of (person1, person2) combinations
-        // TODO Run FELINE on it once using depthFirstSearch and once using prunedDepthFirstSearch
-        // TODO And compare the times it took for the two different methods
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Link of person 1:");
-        String link1 = scanner.nextLine();
-        if (!people.containsKey(link1)) {
-            System.out.println("Error: Person not found");
-            return;
-        }
-        Person person1 = people.get(link1);
-        System.out.println("Link of person 2:");
-        String link2 = scanner.nextLine();
-        if (!people.containsKey(link2)) {
-            System.out.println("Error: Person not found");
-            return;
-        }
-        Person person2 = people.get(link2);
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000;
+        System.out.println("Time to assign (x,y) coordinates: " + duration + "ms");
 
-        System.out.println("Searching for a path between " + Person.parseName(link1) + " and " + Person.parseName(link2) + "...");
-        if (person1.x > person2.x || person1.y > person2.y) {
-            System.out.println("Feline says that no path exists.");
-            return;
+        // Create a large set of (person1, person2) combinations
+        Person[] peopleArray = people.values().toArray(new Person[0]);
+        HashSet<Pairing> pairings = new HashSet<>();
+        final int numPairings = 20;
+        for (i = 0; i < numPairings; i++) {
+            int index1 = new Random().nextInt(peopleArray.length);
+            int index2 = new Random().nextInt(peopleArray.length);
+            pairings.add(new Pairing(peopleArray[index1], peopleArray[index2]));
         }
-        System.out.println("Feline says path may exist. Performing DFS...");
 
-        // Perform DFS
-        boolean pathExists = depthFirstSearch(person1, person2);
-        System.out.println("Does the path exist? " + pathExists);
+        // Run pruned DFS with feline
+        startTime = System.nanoTime();
+        for (Pairing pairing : pairings) {
+            Person person1 = pairing.getPerson1();
+            Person person2 = pairing.getPerson2();
+            boolean pathExists;
+            if (person1.x > person2.x || person1.y > person2.y) {
+                pathExists = false;
+            } else {
+                pathExists = prunedDepthFirstSearch(person1, person2);
+            }
+            System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+        }
+        endTime = System.nanoTime();
+        duration = (endTime - startTime)/1000000;
+        System.out.println("Time for pruned DFS with feline: " + duration + "ms");
+
+        // Run basic DFS with feline
+        for (Pairing pairing : pairings) {
+            Person person1 = pairing.getPerson1();
+            Person person2 = pairing.getPerson2();
+            boolean pathExists;
+            if (person1.x > person2.x || person1.y > person2.y) {
+                pathExists = false;
+            } else {
+                pathExists = depthFirstSearch(person1, person2);
+            }
+            System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+        }
+        endTime = System.nanoTime();
+        duration = (endTime - startTime)/1000000;
+        System.out.println("Time for basic DFS with feline: " + duration + "ms");
+
+        // Run basic DFS without feline
+        for (Pairing pairing : pairings) {
+            Person person1 = pairing.getPerson1();
+            Person person2 = pairing.getPerson2();
+            boolean pathExists = depthFirstSearch(person1, person2);
+            System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+        }
+        endTime = System.nanoTime();
+        duration = (endTime - startTime)/1000000;
+        System.out.println("Time for basic DFS without feline: " + duration + "ms");
     }
 
     /**
