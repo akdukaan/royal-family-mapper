@@ -3,7 +3,7 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
-    final public static int PEOPLE_SIZE = 2500;
+    final public static int PEOPLE_SIZE = 1000;
     final public static int NUM_PAIRINGS = 1000000;
 
     public static HashMap<String, Person> people = new HashMap<>();
@@ -132,6 +132,7 @@ public class Main {
         return false;
     }
 
+    // TODO Switch topologicalSort to be iterative instead of recursive
     /**
      * Does a topological sort on p and all of its children
      * @param p The person to sort the children of
