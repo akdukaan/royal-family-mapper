@@ -16,7 +16,7 @@ public class Person {
     int y = 0;
 
     public Person(String link) {
-        if (Main.people.size() >= Main.maxSize) return;
+        if (Main.people.size() >= Main.PEOPLE_SIZE) return;
         // TODO Fix some links with % in them
         this.link = link;
         name = parseName(link);
@@ -29,7 +29,7 @@ public class Person {
         try {
             doc = Jsoup.connect(link).get();
             Element table = getTable(doc);
-            if (table != null && children.size() < Main.maxSize) {
+            if (table != null && children.size() < Main.PEOPLE_SIZE) {
                 createFamily(table);
             }
         } catch (Exception e) {

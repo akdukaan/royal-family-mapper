@@ -3,8 +3,10 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
+    final public static int PEOPLE_SIZE = 9;
+    final public static int NUM_PAIRINGS = 20;
+
     public static HashMap<String, Person> people = new HashMap<>();
-    public static int maxSize = 9;
     public static HashSet<String> visited;
     public static Stack<Person> stack;
 
@@ -44,8 +46,7 @@ public class Main {
         // Create a large set of (person1, person2) combinations
         Person[] peopleArray = people.values().toArray(new Person[0]);
         HashSet<Pairing> pairings = new HashSet<>();
-        final int numPairings = 20;
-        for (i = 0; i < numPairings; i++) {
+        for (i = 0; i < NUM_PAIRINGS; i++) {
             int index1 = new Random().nextInt(peopleArray.length);
             int index2 = new Random().nextInt(peopleArray.length);
             pairings.add(new Pairing(peopleArray[index1], peopleArray[index2]));
