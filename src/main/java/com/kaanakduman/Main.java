@@ -3,8 +3,8 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
-    final public static int PEOPLE_SIZE = 9;
-    final public static int NUM_PAIRINGS = 20;
+    final public static int PEOPLE_SIZE = 10000;
+    final public static int NUM_PAIRINGS = 100000;
 
     public static HashMap<String, Person> people = new HashMap<>();
     public static HashSet<String> visited;
@@ -12,16 +12,11 @@ public class Main {
 
     public static void main(String[] args) {
         new Person("https://en.wikipedia.org/wiki/Elizabeth_II");
-        System.out.println();
-        System.out.println("====================================================================================");
-        System.out.println();
+        printBreak();
         for (Person p : people.values()) {
             System.out.println(p);
         }
-        System.out.println();
-        System.out.println("====================================================================================");
-        System.out.println();
-
+        printBreak();
 
         // Set the x values of the people by topologicalSorting
         long startTime = System.nanoTime();
@@ -68,6 +63,7 @@ public class Main {
         endTime = System.nanoTime();
         duration = (endTime - startTime)/1000000;
         System.out.println("Time for pruned DFS with feline: " + duration + "ms");
+        printBreak();
 
         // Run basic DFS with feline
         for (Pairing pairing : pairings) {
@@ -84,6 +80,7 @@ public class Main {
         endTime = System.nanoTime();
         duration = (endTime - startTime)/1000000;
         System.out.println("Time for basic DFS with feline: " + duration + "ms");
+        printBreak();
 
         // Run basic DFS without feline
         for (Pairing pairing : pairings) {
@@ -103,7 +100,7 @@ public class Main {
      * @param goal The node to end at
      * @return If it is possible to reach goal from start
      */
-    static public boolean depthFirstSearch(Person start, Person goal) {
+    public static boolean depthFirstSearch(Person start, Person goal) {
         visited = new HashSet<>();
         stack = new Stack<>();
         stack.add(start);
@@ -121,7 +118,7 @@ public class Main {
      * @param goal The node to end at
      * @return If it is possible to reach goal from start
      */
-    static public boolean prunedDepthFirstSearch(Person start, Person goal) {
+    public static boolean prunedDepthFirstSearch(Person start, Person goal) {
         visited = new HashSet<>();
         stack = new Stack<>();
         stack.add(start);
@@ -139,12 +136,18 @@ public class Main {
      * Does a topological sort on p and all of its children
      * @param p The person to sort the children of
      */
-    static public void topologicalSort(Person p) {
+    public static void topologicalSort(Person p) {
         if (visited.contains(p.name)) return;
         for (Person c : p.children) {
             topologicalSort(c);
         }
         stack.add(p);
         visited.add(p.name);
+    }
+
+    public static void printBreak() {
+        System.out.println();
+        System.out.println("====================================================================================");
+        System.out.println();
     }
 }

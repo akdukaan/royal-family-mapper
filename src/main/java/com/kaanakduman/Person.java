@@ -17,7 +17,7 @@ public class Person {
 
     public Person(String link) {
         if (Main.people.size() >= Main.PEOPLE_SIZE) return;
-        // TODO Fix some links with % in them
+        link = fixedLink(link);
         this.link = link;
         name = parseName(link);
         if (name == null) return;
@@ -36,6 +36,20 @@ public class Person {
             System.out.println("Ignoring exception");
             e.printStackTrace();
         }
+    }
+
+    // TODO fixedLink method for sites like https://en.wikipedia.org/wiki/Prince_Paul_of_W%C3%BCrttemberg
+    // TODO and https://en.wikipedia.org/wiki/Prince_Frederick_of_Prussia_(1794%E2%80%931863)
+    /**
+     * Sometimes uncommon characters in the URL get encoded. This method converts the entire URL to ASCII
+     * @param link The partially-encoded URL
+     * @return An ASCII URL
+     */
+    public static String fixedLink(String link) {
+        if (link.contains("%")) {
+            System.err.println("ERROR BAD LINK " + link);
+        }
+        return link;
     }
 
     /**
