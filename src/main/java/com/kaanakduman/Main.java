@@ -158,20 +158,6 @@ public class Main {
         return false;
     }
 
-    // TODO Switch topologicalSort to be iterative instead of recursive
-    /**
-     * Does a topological sort on p and all of its children
-     * @param p The person to sort the children of
-     */
-    public static void topologicalSort(Person p) {
-        if (visited.contains(p.name)) return;
-        for (Person c : p.children) {
-            topologicalSort(c);
-        }
-        stack.add(p);
-        visited.add(p.name);
-    }
-
     /**
      * Prints line break to pretty the console output
      */
