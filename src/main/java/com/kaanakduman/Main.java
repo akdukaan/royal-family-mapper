@@ -3,7 +3,7 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
-    final public static int PEOPLE_SIZE = 1000;
+    final public static int PEOPLE_SIZE = 200;
     final public static int NUM_PAIRINGS = 1000000;
 
     public static HashMap<String, Person> people = new HashMap<>();
@@ -63,7 +63,6 @@ public class Main {
         endTime = System.nanoTime();
         duration = (endTime - startTime)/1000000;
         System.out.println("Time for pruned DFS with feline: " + duration + "ms");
-        printBreak();
 
         // Run basic DFS with feline
         for (Pairing pairing : pairings) {
@@ -80,7 +79,6 @@ public class Main {
         endTime = System.nanoTime();
         duration = (endTime - startTime)/1000000;
         System.out.println("Time for basic DFS with feline: " + duration + "ms");
-        printBreak();
 
         // Run basic DFS without feline
         for (Pairing pairing : pairings) {
