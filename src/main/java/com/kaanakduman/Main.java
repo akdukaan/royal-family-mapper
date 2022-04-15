@@ -11,15 +11,19 @@ public class Main {
     public static Stack<Person> stack;
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
         new Person("https://en.wikipedia.org/wiki/Elizabeth_II");
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000;
         printBreak();
         for (Person p : people.values()) {
             System.out.println(p);
         }
         printBreak();
+        System.out.println("Time to scrape wikipedia: " + duration + "ms");
 
         // Set the x values of the people by topologicalSorting
-        long startTime = System.nanoTime();
+        startTime = System.nanoTime();
         visited = new HashSet<>();
         stack = new Stack<>();
         for (Person p : people.values()) {
@@ -34,8 +38,8 @@ public class Main {
         // TODO Set the Y values of the people using FELINE
 
 
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime)/1000000;
+        endTime = System.nanoTime();
+        duration = (endTime - startTime)/1000000;
         System.out.println("Time to assign (x,y) coordinates: " + duration + "ms");
 
         // Create a large set of (person1, person2) combinations
