@@ -45,13 +45,7 @@ public class Person {
      * @return An ASCII URL
      */
     public static String fixedLink(String link) {
-        if (link.contains("%")) {
-            System.err.println("ERROR BAD LINK " + link);
-            link = URLDecoder.decode(link);
-            System.out.println("LINK IS NOW " + link);
-
-        }
-        return link;
+        return URLDecoder.decode(link);
     }
 
     /**
