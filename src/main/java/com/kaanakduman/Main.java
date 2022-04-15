@@ -3,7 +3,7 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
-    final public static int PEOPLE_SIZE = 2000;
+    final public static int PEOPLE_SIZE = 200;
     final public static int NUM_PAIRINGS = 100000;
 
     public static HashMap<String, Person> people = new HashMap<>();
@@ -14,13 +14,13 @@ public class Main {
         long startTime = System.nanoTime();
         new Person("https://en.wikipedia.org/wiki/Elizabeth_II");
         long endTime = System.nanoTime();
-        long duration = (endTime - startTime)/1000000;
+        long duration = (endTime - startTime)/1000000000;
         printBreak();
         for (Person p : people.values()) {
             System.out.println(p);
         }
         printBreak();
-        System.out.println("Time to scrape wikipedia: " + duration + "ms");
+        System.out.println("Time to scrape wikipedia: " + duration + "s");
 
         // Set the x values of the people by topologicalSorting
         HashSet<Person> visited = new HashSet<>();
@@ -52,7 +52,8 @@ public class Main {
             i++;
         }
 
-        // TODO Set the Y values of the people using FELINE
+        // TODO Set the Y values of the people using Kahn's algorithm
+        // TODO https://www.geeksforgeeks.org/topological-sorting-indegree-based-solution/
 
 
         endTime = System.nanoTime();
@@ -171,6 +172,9 @@ public class Main {
         visited.add(p.name);
     }
 
+    /**
+     * Prints line break to pretty the console output
+     */
     public static void printBreak() {
         System.out.println();
         System.out.println("====================================================================================");
