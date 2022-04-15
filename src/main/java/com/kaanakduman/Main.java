@@ -7,8 +7,6 @@ public class Main {
     final public static int NUM_PAIRINGS = 100000;
 
     public static HashMap<String, Person> people = new HashMap<>();
-    public static HashSet<String> visited;
-    public static Stack<Person> stack;
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
