@@ -3,8 +3,8 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
-    final public static int PEOPLE_SIZE = 200;
-    final public static int NUM_PAIRINGS = 1000000;
+    final public static int PEOPLE_SIZE = 2000;
+    final public static int NUM_PAIRINGS = 100000;
 
     public static HashMap<String, Person> people = new HashMap<>();
     public static HashSet<String> visited;
@@ -23,15 +23,32 @@ public class Main {
         System.out.println("Time to scrape wikipedia: " + duration + "ms");
 
         // Set the x values of the people by topologicalSorting
+        HashSet<Person> visited = new HashSet<>();
+        Stack<Person> workingStack = new Stack<>();
+        Stack<Person> solutionStack = new Stack<>();
+
         startTime = System.nanoTime();
-        visited = new HashSet<>();
-        stack = new Stack<>();
         for (Person p : people.values()) {
-            topologicalSort(p);
+            if (!visited.contains(p)) {
+                workingStack.add(p);
+                while (!workingStack.isEmpty()) {
+                    Person working = workingStack.peek();
+                    if (visited.contains(working)) {
+                        solutionStack.add(workingStack.pop());
+                    } else {
+                        visited.add(working);
+                        for (Person c : working.children) {
+                            if (!visited.contains(c)) {
+                                workingStack.add(c);
+                            }
+                        }
+                    }
+                }
+            }
         }
         int i = 1;
-        while (!stack.isEmpty()) {
-            stack.pop().x = i;
+        for (Person per : solutionStack) {
+            per.x = i;
             i++;
         }
 
@@ -103,13 +120,16 @@ public class Main {
      * @return If it is possible to reach goal from start
      */
     public static boolean depthFirstSearch(Person start, Person goal) {
-        visited = new HashSet<>();
-        stack = new Stack<>();
+        HashSet<Person> visited = new HashSet<>();
+        Stack<Person> stack = new Stack<>();
         stack.add(start);
         while (!stack.isEmpty()) {
             Person p = stack.pop();
             if (p.equals(goal)) return true;
-            stack.addAll(p.children);
+            if (!visited.contains(p)) {
+                visited.add(p);
+                stack.addAll(p.children);
+            }
         }
         return false;
     }
@@ -121,14 +141,17 @@ public class Main {
      * @return If it is possible to reach goal from start
      */
     public static boolean prunedDepthFirstSearch(Person start, Person goal) {
-        visited = new HashSet<>();
-        stack = new Stack<>();
+        HashSet<Person> visited = new HashSet<>();
+        Stack<Person> stack = new Stack<>();
         stack.add(start);
         while (!stack.isEmpty()) {
             Person p = stack.pop();
             if (p.equals(goal)) return true;
-            if (p.x < goal.x && p.y < goal.y) {
-                stack.addAll(p.children);
+            if (!visited.contains(p)) {
+                visited.add(p);
+                if (p.x < goal.x && p.y < goal.y) {
+                    stack.addAll(p.children);
+                }
             }
         }
         return false;
