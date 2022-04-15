@@ -24,7 +24,7 @@ public class Person {
         if (name == null) return;
         if (Main.people.containsKey(link)) return;
         Main.people.put(link, this);
-        String notifyMessage = Main.people.size() + name + " " + link;
+        String notifyMessage = Main.people.size() + " " + name + " " + link;
         System.out.println(notifyMessage);
         Document doc;
         try {

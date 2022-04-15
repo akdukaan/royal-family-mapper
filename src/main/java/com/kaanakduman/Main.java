@@ -3,8 +3,8 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
-    final public static int PEOPLE_SIZE = 10000;
-    final public static int NUM_PAIRINGS = 100000;
+    final public static int PEOPLE_SIZE = 2500;
+    final public static int NUM_PAIRINGS = 1000000;
 
     public static HashMap<String, Person> people = new HashMap<>();
     public static HashSet<String> visited;
@@ -58,7 +58,7 @@ public class Main {
             } else {
                 pathExists = prunedDepthFirstSearch(person1, person2);
             }
-            System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+            //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
         }
         endTime = System.nanoTime();
         duration = (endTime - startTime)/1000000;
@@ -75,7 +75,7 @@ public class Main {
             } else {
                 pathExists = depthFirstSearch(person1, person2);
             }
-            System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+            //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
         }
         endTime = System.nanoTime();
         duration = (endTime - startTime)/1000000;
@@ -87,7 +87,7 @@ public class Main {
             Person person1 = pairing.getPerson1();
             Person person2 = pairing.getPerson2();
             boolean pathExists = depthFirstSearch(person1, person2);
-            System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+            //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
         }
         endTime = System.nanoTime();
         duration = (endTime - startTime)/1000000;
