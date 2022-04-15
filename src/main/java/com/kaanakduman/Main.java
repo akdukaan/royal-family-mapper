@@ -3,8 +3,14 @@ package com.kaanakduman;
 import java.util.*;
 
 public class Main {
-    final public static int PEOPLE_SIZE = 200;
-    final public static int NUM_PAIRINGS = 100000;
+
+    // PEOPLE_SIZE - The number of vertices in the graph
+    // 50 is good for an initial test, 2000 for a stronger test, 10000 for our final test
+    final public static int PEOPLE_SIZE = 50;
+
+    // NUM_PAIRINGS - The number of random pairings to create in testing the efficiency of our algorithm
+    // 10000 is good for an initial test, 1000000 is good for our final test
+    final public static int NUM_PAIRINGS = 10000;
 
     public static HashMap<String, Person> people = new HashMap<>();
 
@@ -12,7 +18,7 @@ public class Main {
         long startTime = System.nanoTime();
         new Person("https://en.wikipedia.org/wiki/Elizabeth_II");
         long endTime = System.nanoTime();
-        long duration = (endTime - startTime)/1000000000;
+        long duration = (endTime - startTime) / 1000000000;
         printBreak();
         for (Person p : people.values()) {
             System.out.println(p);
@@ -55,7 +61,7 @@ public class Main {
 
 
         endTime = System.nanoTime();
-        duration = (endTime - startTime)/1000000;
+        duration = (endTime - startTime) / 1000000;
         System.out.println("Time to assign (x,y) coordinates: " + duration + "ms");
 
         // Create a large set of (person1, person2) combinations
@@ -81,7 +87,7 @@ public class Main {
             //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
         }
         endTime = System.nanoTime();
-        duration = (endTime - startTime)/1000000;
+        duration = (endTime - startTime) / 1000000;
         System.out.println("Time for pruned DFS with feline: " + duration + "ms");
 
         // Run basic DFS with feline
@@ -97,7 +103,7 @@ public class Main {
             //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
         }
         endTime = System.nanoTime();
-        duration = (endTime - startTime)/1000000;
+        duration = (endTime - startTime) / 1000000;
         System.out.println("Time for basic DFS with feline: " + duration + "ms");
 
         // Run basic DFS without feline
@@ -108,7 +114,7 @@ public class Main {
             //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
         }
         endTime = System.nanoTime();
-        duration = (endTime - startTime)/1000000;
+        duration = (endTime - startTime) / 1000000;
         System.out.println("Time for basic DFS without feline: " + duration + "ms");
     }
 
