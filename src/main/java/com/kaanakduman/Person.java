@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.net.URLDecoder;
 import java.util.HashSet;
 
 public class Person {
@@ -23,7 +24,7 @@ public class Person {
         if (name == null) return;
         if (Main.people.containsKey(link)) return;
         Main.people.put(link, this);
-        String notifyMessage = name + " " + link;
+        String notifyMessage = Main.people.size() + name + " " + link;
         System.out.println(notifyMessage);
         Document doc;
         try {
@@ -38,8 +39,6 @@ public class Person {
         }
     }
 
-    // TODO fixedLink method for sites like https://en.wikipedia.org/wiki/Prince_Paul_of_W%C3%BCrttemberg
-    // TODO and https://en.wikipedia.org/wiki/Prince_Frederick_of_Prussia_(1794%E2%80%931863)
     /**
      * Sometimes uncommon characters in the URL get encoded. This method converts the entire URL to ASCII
      * @param link The partially-encoded URL
@@ -48,6 +47,9 @@ public class Person {
     public static String fixedLink(String link) {
         if (link.contains("%")) {
             System.err.println("ERROR BAD LINK " + link);
+            link = URLDecoder.decode(link);
+            System.out.println("LINK IS NOW " + link);
+
         }
         return link;
     }
