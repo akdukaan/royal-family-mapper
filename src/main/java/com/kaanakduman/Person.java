@@ -15,6 +15,7 @@ public class Person {
     String link;
     int x = 0;
     int y = 0;
+    int indegree = 0;
 
     public Person(String link) {
         if (Main.people.size() >= Main.PEOPLE_SIZE) return;
@@ -121,6 +122,7 @@ public class Person {
             if (child.name != null) {
                 this.children.add(child);
                 child.parents.add(this);
+                child.indegree++;
             }
         }
     }
@@ -169,6 +171,7 @@ public class Person {
         if (parent.name != null) {
             parent.children.add(this);
             this.parents.add(parent);
+            this.indegree++;
         }
 
     }

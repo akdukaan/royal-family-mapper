@@ -12,6 +12,7 @@ public class Main {
     // 10000 is good for an initial test, 1000000 is good for our final test
     final public static int NUM_PAIRINGS = 10000;
 
+    // Stores a list of people with their link as the key
     public static HashMap<String, Person> people = new HashMap<>();
 
     public static void main(String[] args) {
