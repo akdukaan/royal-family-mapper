@@ -1,23 +1,34 @@
 package com.kaanakduman;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
 
     // PEOPLE_SIZE - The number of vertices in the graph
     // 50 is good for an initial test, 2000 for a stronger test, 10000 for our final test
-    final public static int PEOPLE_SIZE = 50;
+    final public static int PEOPLE_SIZE = 10000;
 
     // NUM_PAIRINGS - The number of random pairings to create in testing the efficiency of our algorithm
     // 10000 is good for an initial test, 1000000 is good for our final test
     final public static int NUM_PAIRINGS = 10000;
 
+    // WRITE_TO_JSON - Whether or not we should overwrite the results in output.yml.
+    // Typically leave as false unless you fixed something and need a new json.
+    final public static boolean WRITE_TO_JSON = true;
+
     // Stores a list of people with their link as the key
     public static HashMap<String, Person> people = new HashMap<>();
+    public static HashSet<String> exploredLinks = new HashSet<>();
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
         new Person("https://en.wikipedia.org/wiki/Elizabeth_II");
+//        new Person("https://en.wikipedia.org/wiki/Prince_Tomislav_of_Yugoslavia");
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         printBreak();
@@ -26,6 +37,12 @@ public class Main {
         }
         printBreak();
         System.out.println("Time to scrape wikipedia: " + duration + "s");
+
+        for (Person p : people.values()) {
+            if (p.parents.size() > 2) {
+                System.err.println("ERROR: " + p.name + " has three parents: " + p.parents);
+            }
+        }
 
         // Set the x values of the people by topologicalSorting
         HashSet<Person> visited = new HashSet<>();
@@ -84,6 +101,17 @@ public class Main {
         duration = (endTime - startTime) / 1000000;
         System.out.println("Time to assign (x,y) coordinates: " + duration + "ms");
 
+        for (Person person : people.values()) {
+            for (Person child : person.children) {
+                if (child.y <= person.y) {
+                    System.err.println("ERROR: " + child + " is a child of but is positioned to the BOTTOM of " + person);
+                }
+                if (child.x <= person.x) {
+                    System.err.println("ERROR: " + child + " is a child of but is positioned to the LEFT of " + person);
+                }
+            }
+        }
+
         // Create a large set of (person1, person2) combinations
         Person[] peopleArray = people.values().toArray(new Person[0]);
         HashSet<Pairing> pairings = new HashSet<>();
@@ -136,6 +164,40 @@ public class Main {
         endTime = System.nanoTime();
         duration = (endTime - startTime) / 1000000;
         System.out.println("Time for basic DFS without feline: " + duration + "ms");
+
+        try {
+            writeJson();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeJson() throws IOException {
+        if (!WRITE_TO_JSON) return;
+        FileWriter file = new FileWriter("output.json");
+        JSONObject root = new JSONObject();
+        JSONObject obj;
+        for (Person p : people.values()) {
+            obj = new JSONObject();
+            obj.put("name", p.name);
+            obj.put("x", p.x);
+            obj.put("y", p.y);
+
+            JSONArray children = new JSONArray();
+            for (Person c : p.children) {
+                JSONObject childrenCoords = new JSONObject();
+                childrenCoords.put("x", c.x);
+                childrenCoords.put("y", c.y);
+                childrenCoords.put("name", c.name);
+                children.add(childrenCoords);
+            }
+            obj.put("children", children);
+            root.put(p.name, obj);
+        }
+        file.write(root.toJSONString());
+
+        file.close();
+
     }
 
     /**

@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.HashSet;
 
@@ -19,11 +20,17 @@ public class Person {
 
     public Person(String link) {
         if (Main.people.size() >= Main.PEOPLE_SIZE) return;
-        if (Main.people.containsKey(link)) return;
-        this.link = link;
-        name = parseName(fixedLink(link));
+        try {
+            this.link = redirectedLink(link);
+        } catch (Exception e) {
+            this.link = link;
+        }
+        name = parseName(decodedLink(link));
+        if (Main.people.containsKey(name)) {
+            name = null;
+        }
         if (name == null) return;
-        Main.people.put(link, this);
+        Main.people.put(name, this);
         String notifyMessage = Main.people.size() + " " + name + " " + link;
         System.out.println(notifyMessage);
         Document doc;
@@ -39,12 +46,31 @@ public class Person {
         }
     }
 
+    // TODO Implement this
+    /*
+    Example 1:
+    input of  https://en.wikipedia.org/wiki/Frederika_Louisa_of_Hesse-Darmstadt should lead to
+    output of https://en.wikipedia.org/wiki/Frederica_Louisa_of_Hesse-Darmstadt
+    Notice the k in Frederika turns into a c
+    Example 2:
+    input of  https://en.wikipedia.org/wiki/Prince_George_of_Yugoslavia_(born_1984) should lead to
+    output of https://en.wikipedia.org/wiki/Prince_Tomislav_of_Yugoslavia#Marriage_and_issue
+     */
+    /**
+     * Sometimes a url will redirect to a new url, so this method gets the final url
+     * @param link the original url
+     * @return the url at the end of the path
+     */
+    public static String redirectedLink(String link) {
+        return link + "";
+    }
+
     /**
      * Sometimes uncommon characters in the URL get encoded. This method converts the entire URL to ASCII
      * @param link The partially-encoded URL
      * @return An ASCII URL
      */
-    public static String fixedLink(String link) {
+    public static String decodedLink(String link) {
         return URLDecoder.decode(link);
     }
 
@@ -55,8 +81,15 @@ public class Person {
      */
     public static boolean isLinkMalformed(String link) {
         if (link.contains(";redlink=1")) return true;
+        if (link.contains("#")) return true;
         if (link.contains("en.wikipedia.orghttps")) return true;
         if (link.contains("Elchingen_Abbey")) return true;
+        if (link.contains("Ludlow")) return true;
+        if (link.contains("Prince_Tomislav_of_Yugoslavia")) return true;
+        if (link.contains("Michael_I_of_Romania")) return true;
+        if (link.contains("Grand_Duke_Michael_Pavlovich_of_Russia")) return true;
+        if (link.contains("Eristavi")) return true;
+        if (link.contains("Ketevan_the_Martyr")) return true;
         return false;
     }
 
@@ -72,7 +105,12 @@ public class Person {
         if (name.length() <= 1) return null;
         if (name.startsWith("https://")) return null;
         if (name.startsWith("(")) return null;
-        return name;
+        try {
+            Document doc = Jsoup.connect(link).get();
+            return doc.title().split(" - Wikipedia")[0];
+        } catch (IOException e) {
+        }
+        return null;
     }
 
     /**
@@ -94,12 +132,12 @@ public class Person {
 
     /**
      * Returns a person node from their link
-     * @param link The link to a person
+     * @param key The link to a person
      * @return The person we've found with the link
      */
-    public Person getPerson(String link) {
-        if (Main.people.containsKey(link)) {
-            return Main.people.get(link);
+    public Person getPerson(String key) {
+        if (Main.people.containsKey(key)) {
+            return Main.people.get(key);
         }
         return null;
     }
@@ -114,7 +152,7 @@ public class Person {
             string = string.split("<a href=\"")[1].split("\"")[0];
             if (string.contains("redlink=1")) return;
             String link = "https://en.wikipedia.org" + string;
-            child = getPerson(link);
+            child = getPerson(parseName(link));
             if (child == null) {
                 child = new Person(link);
             }
@@ -162,7 +200,7 @@ public class Person {
         }
         String href = member.attr("href");
         String link = "https://en.wikipedia.org" + href;
-        Person parent = getPerson(link);
+        Person parent = getPerson(parseName(link));
         if (parent == null) {
             parent = new Person(link);
         }
@@ -190,7 +228,7 @@ public class Person {
         for (Person child : children) {
             childrenNames.append(" ").append("\n\t> ").append(child.name);
         }
-        return name + " (" + link + ")" + childrenNames;
+        return name + " (" + link + ")";
     }
 
     @Override
