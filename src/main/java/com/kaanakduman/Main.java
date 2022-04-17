@@ -6,7 +6,7 @@ public class Main {
 
     // PEOPLE_SIZE - The number of vertices in the graph
     // 50 is good for an initial test, 2000 for a stronger test, 10000 for our final test
-    final public static int PEOPLE_SIZE = 900;
+    final public static int PEOPLE_SIZE = 50;
 
     // NUM_PAIRINGS - The number of random pairings to create in testing the efficiency of our algorithm
     // 10000 is good for an initial test, 1000000 is good for our final test
@@ -57,8 +57,25 @@ public class Main {
             i++;
         }
 
-        // TODO Set the Y values of the people using Kahn's algorithm
-        // TODO https://www.geeksforgeeks.org/topological-sorting-indegree-based-solution/
+        // Assign Y values using Kahn's algorithm
+        int y = 1;
+        Queue<Person> queue = new LinkedList<>();
+        for (Person p : people.values()) {
+            if (p.indegree == 0) {
+                queue.add(p);
+            }
+        }
+        while (!queue.isEmpty()) {
+            Person next = queue.remove();
+            next.y = y;
+            y++;
+            for (Person child : next.children) {
+                child.indegree--;
+                if (child.indegree == 0) {
+                    queue.add(child);
+                }
+            }
+        }
 
 
         endTime = System.nanoTime();
