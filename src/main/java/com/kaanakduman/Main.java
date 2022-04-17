@@ -58,13 +58,16 @@ public class Main {
         }
 
         // Assign Y values using Kahn's algorithm
-        int y = 1;
+        for (Person p : people.values()) {
+            p.indegree = p.parents.size();
+        }
         Queue<Person> queue = new LinkedList<>();
         for (Person p : people.values()) {
             if (p.indegree == 0) {
                 queue.add(p);
             }
         }
+        int y = 1;
         while (!queue.isEmpty()) {
             Person next = queue.remove();
             next.y = y;
@@ -76,7 +79,6 @@ public class Main {
                 }
             }
         }
-
 
         endTime = System.nanoTime();
         duration = (endTime - startTime) / 1000000;

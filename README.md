@@ -1,7 +1,5 @@
 TODO:
-1. Implement Kahns algorithm to determine y values.
-2. (Optional) Use JavaFX to create a 2d scatterplot of the people.
-3. (Optional) Use JavaFX to plot a family tree.
+Fix an issue where some people can have three parents because Wiki is using links that redirect. ex. https://en.wikipedia.org/wiki/Elena_Pavlovna_of_Württemberg shows up as a parent for someone but then clicking on it leads to someone who already exists so we have 2 copies of the same person.
 
 
-Java 17, Maven, IntelliJ, 
+Run with Java 17, Maven, IntelliJ, 
