@@ -19,10 +19,9 @@ public class Person {
 
     public Person(String link) {
         if (Main.people.size() >= Main.PEOPLE_SIZE) return;
-        link = fixedLink(link);
         if (Main.people.containsKey(link)) return;
         this.link = link;
-        name = parseName(link);
+        name = parseName(fixedLink(link));
         if (name == null) return;
         Main.people.put(link, this);
         String notifyMessage = Main.people.size() + " " + name + " " + link;
