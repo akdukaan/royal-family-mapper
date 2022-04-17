@@ -88,8 +88,18 @@ public class Person {
         if (link.contains("Prince_Tomislav_of_Yugoslavia")) return true;
         if (link.contains("Michael_I_of_Romania")) return true;
         if (link.contains("Grand_Duke_Michael_Pavlovich_of_Russia")) return true;
+        if (link.contains("Grand_Duchess_Alexandra_Mikhailovna_of_Russia")) return true;
         if (link.contains("Eristavi")) return true;
         if (link.contains("Ketevan_the_Martyr")) return true;
+        if (link.contains("Emanuele_Filiberto_of_Savoy")) return true;
+        if (link.contains("Andrzej_Zamoyski")) return true;
+        if (link.contains("Elizabeth_Bonifacia_of_Poland")) return true;
+        if (link.contains("Jan_Kostka")) return true;
+        if (link.contains("Princess_Irina_of_Romania")) return true;
+        if (link.contains("Prince_August_Leopold")) return true;
+        if (link.contains("Prince_Philipp_of_Saxe-Coburg_and_Gotha")) return true;
+        if (link.contains("Micha%C5%82_Zdzis%C5%82aw_Zamoyski")) return true;
+        if (link.contains("Simon_de_Montfort")) return true;
         return false;
     }
 
