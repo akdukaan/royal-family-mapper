@@ -25,37 +25,31 @@ public class Person {
         } catch (Exception e) {
             this.link = link;
         }
-        name = parseName(decodedLink(link));
-        if (Main.people.containsKey(name)) {
-            name = null;
-        }
-        if (name == null) return;
-        Main.people.put(name, this);
-        String notifyMessage = Main.people.size() + " " + name + " " + link;
-        System.out.println(notifyMessage);
+        if (isLinkMalformed(link)) return;
         Document doc;
         try {
             doc = Jsoup.connect(link).get();
+            name = doc.title().split(" - Wikipedia")[0];
+            if (name.contains("#")) {
+                name = null;
+            }
+            if (Main.people.containsKey(name)) {
+                name = null;
+            }
+            if (name == null) return;
+            Main.people.put(name, this);
+            String notifyMessage = Main.people.size() + " " + name + " " + link;
+            System.out.println(notifyMessage);
             Element table = getTable(doc);
             if (table != null && children.size() < Main.PEOPLE_SIZE) {
                 createFamily(table);
             }
         } catch (Exception e) {
-            System.err.println("Ignoring exception");
-            e.printStackTrace();
+            System.err.println("Error: " + link);
         }
     }
 
     // TODO Implement this
-    /*
-    Example 1:
-    input of  https://en.wikipedia.org/wiki/Frederika_Louisa_of_Hesse-Darmstadt should lead to
-    output of https://en.wikipedia.org/wiki/Frederica_Louisa_of_Hesse-Darmstadt
-    Notice the k in Frederika turns into a c
-    Example 2:
-    input of  https://en.wikipedia.org/wiki/Prince_George_of_Yugoslavia_(born_1984) should lead to
-    output of https://en.wikipedia.org/wiki/Prince_Tomislav_of_Yugoslavia#Marriage_and_issue
-     */
     /**
      * Sometimes a url will redirect to a new url, so this method gets the final url
      * @param link the original url
@@ -80,26 +74,27 @@ public class Person {
      * @return If the link won't lead to a real person's wikipedia profile
      */
     public static boolean isLinkMalformed(String link) {
-        if (link.contains(";redlink=1")) return true;
+        if (link.contains("redlink=1")) return true;
         if (link.contains("#")) return true;
         if (link.contains("en.wikipedia.orghttps")) return true;
-        if (link.contains("Elchingen_Abbey")) return true;
-        if (link.contains("Ludlow")) return true;
-        if (link.contains("Prince_Tomislav_of_Yugoslavia")) return true;
-        if (link.contains("Michael_I_of_Romania")) return true;
-        if (link.contains("Grand_Duke_Michael_Pavlovich_of_Russia")) return true;
-        if (link.contains("Grand_Duchess_Alexandra_Mikhailovna_of_Russia")) return true;
-        if (link.contains("Eristavi")) return true;
-        if (link.contains("Ketevan_the_Martyr")) return true;
-        if (link.contains("Emanuele_Filiberto_of_Savoy")) return true;
-        if (link.contains("Andrzej_Zamoyski")) return true;
-        if (link.contains("Elizabeth_Bonifacia_of_Poland")) return true;
-        if (link.contains("Jan_Kostka")) return true;
-        if (link.contains("Princess_Irina_of_Romania")) return true;
-        if (link.contains("Prince_August_Leopold")) return true;
-        if (link.contains("Prince_Philipp_of_Saxe-Coburg_and_Gotha")) return true;
-        if (link.contains("Micha%C5%82_Zdzis%C5%82aw_Zamoyski")) return true;
-        if (link.contains("Simon_de_Montfort")) return true;
+        if (link.contains("TemplateStyles")) return true;
+//        if (link.contains("Elchingen_Abbey")) return true;
+//        if (link.contains("Ludlow")) return true;
+//        if (link.contains("Prince_Tomislav_of_Yugoslavia")) return true;
+//        if (link.contains("Michael_I_of_Romania")) return true;
+//        if (link.contains("Grand_Duke_Michael_Pavlovich_of_Russia")) return true;
+//        if (link.contains("Grand_Duchess_Alexandra_Mikhailovna_of_Russia")) return true;
+//        if (link.contains("Eristavi")) return true;
+//        if (link.contains("Ketevan_the_Martyr")) return true;
+//        if (link.contains("Emanuele_Filiberto_of_Savoy")) return true;
+//        if (link.contains("Andrzej_Zamoyski")) return true;
+//        if (link.contains("Elizabeth_Bonifacia_of_Poland")) return true;
+//        if (link.contains("Jan_Kostka")) return true;
+//        if (link.contains("Princess_Irina_of_Romania")) return true;
+//        if (link.contains("Prince_August_Leopold")) return true;
+//        if (link.contains("Prince_Philipp_of_Saxe-Coburg_and_Gotha")) return true;
+//        if (link.contains("Micha%C5%82_Zdzis%C5%82aw_Zamoyski")) return true;
+//        if (link.contains("Simon_de_Montfort")) return true;
         return false;
     }
 
@@ -166,7 +161,7 @@ public class Person {
             if (child == null) {
                 child = new Person(link);
             }
-            if (child.name != null) {
+            if (child.name != null && !child.name.equals(this.name)) {
                 this.children.add(child);
                 child.parents.add(this);
             }

@@ -27,8 +27,7 @@ public class Main {
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-        new Person("https://en.wikipedia.org/wiki/Elizabeth_II");
-//        new Person("https://en.wikipedia.org/wiki/Prince_Tomislav_of_Yugoslavia");
+        new Person("https://en.wikipedia.org/wiki/Grand_Duke_Michael_Pavlovich_of_Russia");
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         printBreak();
@@ -178,21 +177,25 @@ public class Main {
         JSONObject root = new JSONObject();
         JSONObject obj;
         for (Person p : people.values()) {
-            obj = new JSONObject();
-            obj.put("name", p.name);
-            obj.put("x", p.x);
-            obj.put("y", p.y);
+            if (p.y > 0) {
+                obj = new JSONObject();
+                obj.put("name", p.name);
+                obj.put("x", p.x);
+                obj.put("y", p.y);
 
-            JSONArray children = new JSONArray();
-            for (Person c : p.children) {
-                JSONObject childrenCoords = new JSONObject();
-                childrenCoords.put("x", c.x);
-                childrenCoords.put("y", c.y);
-                childrenCoords.put("name", c.name);
-                children.add(childrenCoords);
+                JSONArray children = new JSONArray();
+                for (Person c : p.children) {
+                    if (c.y > 0) {
+                        JSONObject childrenCoords = new JSONObject();
+                        childrenCoords.put("x", c.x);
+                        childrenCoords.put("y", c.y);
+                        childrenCoords.put("name", c.name);
+                        children.add(childrenCoords);
+                    }
+                }
+                obj.put("children", children);
+                root.put(p.name, obj);
             }
-            obj.put("children", children);
-            root.put(p.name, obj);
         }
         file.write(root.toJSONString());
 
