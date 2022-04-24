@@ -17,17 +17,16 @@ public class Main {
     // 10000 is good for an initial test, 1000000 is good for our final test
     final public static int NUM_PAIRINGS = 10000;
 
-    // WRITE_TO_JSON - Whether or not we should overwrite the results in output.yml.
-    // Typically leave as false unless you fixed something and need a new json.
+    // WRITE_TO_JSON - Whether we should overwrite the results in output.yml.
+    // Typically, leave as false unless you fixed something and need a new json.
     final public static boolean WRITE_TO_JSON = true;
 
     // Stores a list of people with their link as the key
     public static HashMap<String, Person> people = new HashMap<>();
-    public static HashSet<String> exploredLinks = new HashSet<>();
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-        new Person("https://en.wikipedia.org/wiki/Jan_Kostka");
+        new Person("https://en.wikipedia.org/wiki/Elizabeth_II");
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         printBreak();

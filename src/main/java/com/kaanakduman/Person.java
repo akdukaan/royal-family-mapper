@@ -6,7 +6,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.HashSet;
 
 public class Person {
@@ -20,11 +19,7 @@ public class Person {
 
     public Person(String link) {
         if (Main.people.size() >= Main.PEOPLE_SIZE) return;
-        try {
-            this.link = redirectedLink(link);
-        } catch (Exception e) {
-            this.link = link;
-        }
+        this.link = link;
         if (isLinkMalformed(link)) return;
         Document doc;
         try {
@@ -49,25 +44,6 @@ public class Person {
         }
     }
 
-    // TODO Implement this
-    /**
-     * Sometimes a url will redirect to a new url, so this method gets the final url
-     * @param link the original url
-     * @return the url at the end of the path
-     */
-    public static String redirectedLink(String link) {
-        return link + "";
-    }
-
-    /**
-     * Sometimes uncommon characters in the URL get encoded. This method converts the entire URL to ASCII
-     * @param link The partially-encoded URL
-     * @return An ASCII URL
-     */
-    public static String decodedLink(String link) {
-        return URLDecoder.decode(link);
-    }
-
     /**
      * Tells you if there's an issue with a wikipedia link
      * @param link The link of the wikipedia profile to search
@@ -78,23 +54,6 @@ public class Person {
         if (link.contains("#")) return true;
         if (link.contains("en.wikipedia.orghttps")) return true;
         if (link.contains("TemplateStyles")) return true;
-//        if (link.contains("Elchingen_Abbey")) return true;
-//        if (link.contains("Ludlow")) return true;
-//        if (link.contains("Prince_Tomislav_of_Yugoslavia")) return true;
-//        if (link.contains("Michael_I_of_Romania")) return true;
-//        if (link.contains("Grand_Duke_Michael_Pavlovich_of_Russia")) return true;
-//        if (link.contains("Grand_Duchess_Alexandra_Mikhailovna_of_Russia")) return true;
-//        if (link.contains("Eristavi")) return true;
-//        if (link.contains("Ketevan_the_Martyr")) return true;
-//        if (link.contains("Emanuele_Filiberto_of_Savoy")) return true;
-//        if (link.contains("Andrzej_Zamoyski")) return true;
-//        if (link.contains("Elizabeth_Bonifacia_of_Poland")) return true;
-//        if (link.contains("Jan_Kostka")) return true;
-//        if (link.contains("Princess_Irina_of_Romania")) return true;
-//        if (link.contains("Prince_August_Leopold")) return true;
-//        if (link.contains("Prince_Philipp_of_Saxe-Coburg_and_Gotha")) return true;
-//        if (link.contains("Micha%C5%82_Zdzis%C5%82aw_Zamoyski")) return true;
-//        if (link.contains("Simon_de_Montfort")) return true;
         return false;
     }
 
@@ -114,6 +73,7 @@ public class Person {
             Document doc = Jsoup.connect(link).get();
             return doc.title().split(" - Wikipedia")[0];
         } catch (IOException e) {
+            System.err.println("ERROR: Exception parsing name for " + link);
         }
         return null;
     }
@@ -192,8 +152,6 @@ public class Person {
     }
 
     public boolean hasBlackText(String string) {
-        System.out.println("Checking for blacktext for " + this.name);
-        System.out.println(string);
         return !string.startsWith("<a") || !string.endsWith("</a>");
     }
 
@@ -237,17 +195,12 @@ public class Person {
 
     @Override
     public String toString() {
-        StringBuilder childrenNames = new StringBuilder();
-        for (Person child : children) {
-            childrenNames.append(" ").append("\n\t> ").append(child.name);
-        }
         return name + " (" + link + ")";
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Person) {
-            Person p = (Person) o;
+        if (o instanceof Person p) {
             if (p.name.equals(this.name)) {
                 return true;
             }
