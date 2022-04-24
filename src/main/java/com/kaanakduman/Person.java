@@ -153,6 +153,7 @@ public class Person {
      */
     public void createChild(String string) {
         Person child;
+        if (hasBlackText(string)) return;
         if (string.contains("<a href=\"/wiki/")) {
             string = string.split("<a href=\"")[1].split("\"")[0];
             if (string.contains("redlink=1")) return;
@@ -190,6 +191,12 @@ public class Person {
         return row.getElementsByClass("infobox-label").first();
     }
 
+    public boolean hasBlackText(String string) {
+        System.out.println("Checking for blacktext for " + this.name);
+        System.out.println(string);
+        return !string.startsWith("<a") || !string.endsWith("</a>");
+    }
+
     /**
      * Adds a node's parents to our graph
      * @param row A row in a table containing the name of the parent
@@ -203,6 +210,7 @@ public class Person {
         } else {
             member = data;
         }
+        if (hasBlackText(member.toString())) return;
         String href = member.attr("href");
         String link = "https://en.wikipedia.org" + href;
         Person parent = getPerson(parseName(link));

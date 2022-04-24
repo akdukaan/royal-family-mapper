@@ -27,7 +27,7 @@ public class Main {
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-        new Person("https://en.wikipedia.org/wiki/Grand_Duke_Michael_Pavlovich_of_Russia");
+        new Person("https://en.wikipedia.org/wiki/Jan_Kostka");
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         printBreak();
