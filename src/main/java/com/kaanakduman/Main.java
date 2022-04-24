@@ -11,7 +11,7 @@ public class Main {
 
     // PEOPLE_SIZE - The number of vertices in the graph
     // 50 is good for an initial test, 2000 for a stronger test, 10000 for our final test
-    final public static int PEOPLE_SIZE = 10000;
+    final public static int PEOPLE_SIZE = 100;
 
     // NUM_PAIRINGS - The number of random pairings to create in testing the efficiency of our algorithm
     // 10000 is good for an initial test, 1000000 is good for our final test

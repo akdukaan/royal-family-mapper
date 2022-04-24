@@ -136,9 +136,18 @@ public class Person {
     public void createChildren(Element row) {
         Element data = row.getElementsByClass("infobox-data").first();
         if (data == null) return;
-        String[] stringData = data.toString().split("<br>");
-        for (String string : stringData) {
-            createChild(string);
+        String dataString = data.toString();
+        if (dataString.contains("<ul>")) {
+            String[] stringData = data.toString().split("<ul>")[1].split("</ul>")[0].split("<li>");
+            for (String string : stringData) {
+                createChild(string.replace("</li>", "").replace("</span>", "").replace("<span class=\"nowrap\">", "").replace("<td class=\"infobox-data\">", "").trim());
+            }
+
+        } else if (dataString.contains("<br>")) {
+            String[] stringData = data.toString().split("<br>");
+            for (String string : stringData) {
+                createChild(string.replace("</span>", "").replace("<span class=\"nowrap\">", "").replace("<td class=\"infobox-data\">", "").trim());
+            }
         }
     }
 
@@ -151,8 +160,20 @@ public class Person {
         return row.getElementsByClass("infobox-label").first();
     }
 
+    /**
+     * Determines if there's any text that isn't hyperlinked within a line
+     * @param string the line to check
+     * @return if there is nonhyperlinked text
+     */
+    // Ex. Issue with https://en.wikipedia.org/wiki/Maria_of_Swabia
+
     public boolean hasBlackText(String string) {
-        return !string.startsWith("<a") || !string.endsWith("</a>");
+        if (!string.startsWith("<a href") || !string.endsWith("</a>")) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**
