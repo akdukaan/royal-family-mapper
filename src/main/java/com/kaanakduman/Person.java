@@ -117,6 +117,7 @@ public class Person {
     public void createChild(String string) {
         Person child;
         if (hasBlackText(string)) return;
+        if (string.contains("Leo Löwenstein")) return;
         if (string.contains("<a href=\"/wiki/")) {
             string = string.split("<a href=\"")[1].split("\"")[0];
             if (string.contains("redlink=1")) return;
@@ -196,6 +197,7 @@ public class Person {
         if (!unduplicateline.equals(member.text()))
          return;
         if (hasBlackText(member.toString())) return;
+        if (member.toString().contains("Leo Löwenstein")) return;
         String href = member.attr("href");
         String link = "https://en.wikipedia.org" + href;
         Person parent = getPerson(parseName(link));
