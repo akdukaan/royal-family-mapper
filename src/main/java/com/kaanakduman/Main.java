@@ -15,7 +15,7 @@ public class Main {
 
     // NUM_PAIRINGS - The number of random pairings to create in testing the efficiency of our algorithm
     // 10000 is good for an initial test, 1000000 is good for our final test
-    final public static int NUM_PAIRINGS = 10000000;
+    final public static int NUM_PAIRINGS = 1000000;
 
     // WRITE_TO_JSON - Whether we should overwrite the results in output.yml.
     // Typically, leave as false unless you fixed something and need a new json.
