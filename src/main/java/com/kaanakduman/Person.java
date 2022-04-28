@@ -7,6 +7,8 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.*;
+import java.util.stream.*;
 
 public class Person {
     HashSet<Person> children = new HashSet<>();
@@ -88,7 +90,7 @@ public class Person {
         for (int i = 1; i < rows.size(); i++) {
             Element row = rows.get(i);
             Element header = getHeader(row);
-            if (header != null && (header.text().equals("Father") || header.text().equals("Mother"))) {
+            if (header != null && (header.text().equals("Father") || header.text().equals("Mother"))) {  
                 createParent(row);
             } else if (header != null && (header.text().equals("Issue Detail") || header.text().equals("Issue") || header.text().equals("Children"))) {
                 createChildren(row);
@@ -188,6 +190,11 @@ public class Person {
         } else {
             member = data;
         }
+        String completeline = data.getAllElements().text();
+        //wiki sometimes pulls titles as "Prince joachim Prine joachim", logic removes duplicates
+        String unduplicateline = Arrays.stream( completeline.split("\\s+")).distinct().collect(Collectors.joining(" ")); 
+        if (!unduplicateline.equals(member.text()))
+         return;
         if (hasBlackText(member.toString())) return;
         String href = member.attr("href");
         String link = "https://en.wikipedia.org" + href;
