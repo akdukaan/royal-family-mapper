@@ -167,7 +167,7 @@ public class Person {
      */
     public boolean hasBlackText(String string) {
         if (!string.startsWith("<a href") || !string.endsWith("</a>")) {
-            return string.split("<a href").length == 2;
+            return string.split("<a href").length != 2;
         }
         else {
             return false;
