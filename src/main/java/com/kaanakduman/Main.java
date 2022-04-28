@@ -11,7 +11,7 @@ public class Main {
 
     // PEOPLE_SIZE - The number of vertices in the graph
     // 50 is good for an initial test, 2000 for a stronger test, 10000 for our final test
-    final public static int PEOPLE_SIZE = 10000;
+    final public static int PEOPLE_SIZE = 3000;
 
     // NUM_PAIRINGS - The number of random pairings to create in testing the efficiency of our algorithm
     // 10000 is good for an initial test, 1000000 is good for our final test
@@ -22,7 +22,7 @@ public class Main {
     final public static boolean WRITE_TO_JSON = true;
 
     // Stores a list of people with their link as the key
-    public static HashMap<String, Person> people = new HashMap<>();
+    public static TreeMap<String, Person> people = new TreeMap<>();
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
@@ -95,9 +95,37 @@ public class Main {
             }
         }
 
+        visited = new HashSet<>();
+        workingStack = new Stack<>();
+        solutionStack = new Stack<>();
+
+        for (Person p : people.descendingMap().values()) {
+            if (!visited.contains(p)) {
+                workingStack.add(p);
+                while (!workingStack.isEmpty()) {
+                    Person working = workingStack.peek();
+                    if (visited.contains(working)) {
+                        solutionStack.add(workingStack.pop());
+                    } else {
+                        visited.add(working);
+                        for (Person c : working.children) {
+                            if (!visited.contains(c)) {
+                                workingStack.add(c);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        i = 1;
+        while (!solutionStack.isEmpty()) {
+            solutionStack.pop().z = i;
+            i++;
+        }
+
         endTime = System.nanoTime();
         duration = (endTime - startTime) / 1000000;
-        System.out.println("Time to assign (x,y) coordinates: " + duration + "ms");
+        System.out.println("Time to construct indices: " + duration + "ms");
 
         for (Person person : people.values()) {
             for (Person child : person.children) {
@@ -119,7 +147,24 @@ public class Main {
             pairings.add(new Pairing(peopleArray[index1], peopleArray[index2]));
         }
 
-        // Run pruned DFS with feline
+        // Run superpruned DFS with feline
+        startTime = System.nanoTime();
+        for (Pairing pairing : pairings) {
+            Person person1 = pairing.getPerson1();
+            Person person2 = pairing.getPerson2();
+            boolean pathExists;
+            if (person1.x > person2.x || person1.y > person2.y || person1.z > person2.z) {
+                pathExists = false;
+            } else {
+                pathExists = prunedDepthFirstSearch(person1, person2);
+            }
+            //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+        }
+        endTime = System.nanoTime();
+        duration = (endTime - startTime) / 1000000;
+        System.out.println("Time for superpruned DFS with feline: " + duration + "ms");
+
+        // Run superpruned DFS with feline
         startTime = System.nanoTime();
         for (Pairing pairing : pairings) {
             Person person1 = pairing.getPerson1();
@@ -135,22 +180,6 @@ public class Main {
         endTime = System.nanoTime();
         duration = (endTime - startTime) / 1000000;
         System.out.println("Time for pruned DFS with feline: " + duration + "ms");
-
-        // Run basic DFS with feline
-        for (Pairing pairing : pairings) {
-            Person person1 = pairing.getPerson1();
-            Person person2 = pairing.getPerson2();
-            boolean pathExists;
-            if (person1.x > person2.x || person1.y > person2.y) {
-                pathExists = false;
-            } else {
-                pathExists = depthFirstSearch(person1, person2);
-            }
-            //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
-        }
-        endTime = System.nanoTime();
-        duration = (endTime - startTime) / 1000000;
-        System.out.println("Time for basic DFS with feline: " + duration + "ms");
 
         // Run basic DFS without feline
         for (Pairing pairing : pairings) {
@@ -181,6 +210,7 @@ public class Main {
                 obj.put("name", p.name);
                 obj.put("x", p.x);
                 obj.put("y", p.y);
+                obj.put("x2", p.z);
 
                 JSONArray children = new JSONArray();
                 for (Person c : p.children) {
@@ -188,6 +218,7 @@ public class Main {
                         JSONObject childrenCoords = new JSONObject();
                         childrenCoords.put("x", c.x);
                         childrenCoords.put("y", c.y);
+                        childrenCoords.put("x2", c.z);
                         childrenCoords.put("name", c.name);
                         children.add(childrenCoords);
                     }
