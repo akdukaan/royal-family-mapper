@@ -155,7 +155,7 @@ public class Main {
             if (person1.x > person2.x || person1.y > person2.y || person1.z > person2.z) {
                 pathExists = false;
             } else {
-                pathExists = prunedDepthFirstSearch(person1, person2);
+                pathExists = superprunedDepthFirstSearch(person1, person2);
             }
             //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
         }
@@ -209,16 +209,16 @@ public class Main {
                 obj.put("name", p.name);
                 obj.put("x", p.x);
                 obj.put("y", p.y);
-                obj.put("x2", p.z);
+                obj.put("z", p.z);
 
                 JSONArray children = new JSONArray();
                 for (Person c : p.children) {
                     if (c.y > 0) {
                         JSONObject childrenCoords = new JSONObject();
+                        childrenCoords.put("name", c.name);
                         childrenCoords.put("x", c.x);
                         childrenCoords.put("y", c.y);
-                        childrenCoords.put("x2", c.z);
-                        childrenCoords.put("name", c.name);
+                        childrenCoords.put("z", c.z);
                         children.add(childrenCoords);
                     }
                 }
@@ -269,6 +269,23 @@ public class Main {
             if (!visited.contains(p)) {
                 visited.add(p);
                 if (p.x < goal.x && p.y < goal.y) {
+                    stack.addAll(p.children);
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean superprunedDepthFirstSearch(Person start, Person goal) {
+        HashSet<Person> visited = new HashSet<>();
+        Stack<Person> stack = new Stack<>();
+        stack.add(start);
+        while (!stack.isEmpty()) {
+            Person p = stack.pop();
+            if (p.equals(goal)) return true;
+            if (!visited.contains(p)) {
+                visited.add(p);
+                if (p.x < goal.x && p.y < goal.y && p.z < goal.z) {
                     stack.addAll(p.children);
                 }
             }

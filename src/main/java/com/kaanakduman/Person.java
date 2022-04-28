@@ -43,7 +43,7 @@ public class Person {
                 createFamily(table);
             }
         } catch (Exception e) {
-            System.err.println("Error: " + link);
+            System.out.println("Safely ignoring error: " + link);
         }
     }
 
