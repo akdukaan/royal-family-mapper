@@ -165,11 +165,9 @@ public class Person {
      * @param string the line to check
      * @return if there is nonhyperlinked text
      */
-    // Ex. Issue with https://en.wikipedia.org/wiki/Maria_of_Swabia
-
     public boolean hasBlackText(String string) {
         if (!string.startsWith("<a href") || !string.endsWith("</a>")) {
-            return true;
+            return string.split("<a href").length == 2;
         }
         else {
             return false;
