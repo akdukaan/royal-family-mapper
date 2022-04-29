@@ -161,9 +161,9 @@ public class Main {
         }
         endTime = System.nanoTime();
         duration = (endTime - startTime) / 1000000;
-        System.out.println("Time for superpruned DFS with feline: " + duration + "ms");
+        System.out.println("Time for DFS with 3D pruning: " + duration + "ms");
 
-        // Run superpruned DFS with feline
+        // Run pruned DFS with feline
         startTime = System.nanoTime();
         for (Pairing pairing : pairings) {
             Person person1 = pairing.getPerson1();
@@ -178,7 +178,24 @@ public class Main {
         }
         endTime = System.nanoTime();
         duration = (endTime - startTime) / 1000000;
-        System.out.println("Time for pruned DFS with feline: " + duration + "ms");
+        System.out.println("Time for DFS with 2D pruning: " + duration + "ms");
+
+        // Semipruned
+        startTime = System.nanoTime();
+        for (Pairing pairing : pairings) {
+            Person person1 = pairing.getPerson1();
+            Person person2 = pairing.getPerson2();
+            boolean pathExists;
+            if (person1.x > person2.x || person1.y > person2.y) {
+                pathExists = false;
+            } else {
+                pathExists = semiprunedDepthFirstSearch(person1, person2);
+            }
+            //System.out.println("Does the path exist between " + person1.name + " and " + person2.name + "? " + pathExists);
+        }
+        endTime = System.nanoTime();
+        duration = (endTime - startTime) / 1000000;
+        System.out.println("Time DFS with 1D pruning: " + duration + "ms");
 
         // Run basic DFS without feline
         for (Pairing pairing : pairings) {
@@ -189,7 +206,7 @@ public class Main {
         }
         endTime = System.nanoTime();
         duration = (endTime - startTime) / 1000000;
-        System.out.println("Time for basic DFS without feline: " + duration + "ms");
+        System.out.println("Time DFS without pruning: " + duration + "ms");
 
         try {
             writeJson();
@@ -248,6 +265,23 @@ public class Main {
             if (!visited.contains(p)) {
                 visited.add(p);
                 stack.addAll(p.children);
+            }
+        }
+        return false;
+    }
+
+    public static boolean semiprunedDepthFirstSearch(Person start, Person goal) {
+        HashSet<Person> visited = new HashSet<>();
+        Stack<Person> stack = new Stack<>();
+        stack.add(start);
+        while (!stack.isEmpty()) {
+            Person p = stack.pop();
+            if (p.equals(goal)) return true;
+            if (!visited.contains(p)) {
+                visited.add(p);
+                if (p.x < goal.x) {
+                    stack.addAll(p.children);
+                }
             }
         }
         return false;
